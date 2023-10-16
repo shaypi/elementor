@@ -215,7 +215,7 @@ jobs:
             --create-namespace \
             --timeout 1h
 
-      - name: ensure eployment is successfully rolled out
+      - name: ensure deployment is successfully rolled out
         run: kubectl --namespace redpanda rollout status --watch deployment/redpanda-controller-operator
 
       - name: Install a Redpanda custom resource in the same namespace as the Redpanda Operator

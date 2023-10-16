@@ -174,7 +174,24 @@
                 "ssm:GetParameters"
             ],
             "Resource": [
-                "arn:aws:ssm:*:160213321344:parameter/aws/*",
+                "arn:aws:ssm:*:<account-id>:parameter/aws/*",
                 "arn:aws:ssm:*::parameter/aws/*"
             ]
         },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "kms:CreateGrant",
+                "kms:DescribeKey"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:PutRetentionPolicy"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
