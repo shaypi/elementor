@@ -43,7 +43,7 @@ jobs:
 
       - name: Install third-party dependencies
         run: |
-          apt-get install -y zip curl
+          apt-get install -y zip curl git
 
       - name: Install AWS CLI
         run: |
