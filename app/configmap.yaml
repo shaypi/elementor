@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cpu-monitor-config
+data:
+  KAFKA_BROKER: kafka-broker:9092
+  KAFKA_TOPIC: cpu_levels
