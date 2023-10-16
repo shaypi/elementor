@@ -154,37 +154,25 @@ jobs:
         working-directory: app
         run : kubectl apply -f csi-driver-lvm-striped-xfs.yaml
       
-      - name: Get the ID of the security group that’s associated with the nodes and add inbount firewall rules to the ec2
-        run : |
-          AWS_SECURITY_GROUP_ID=`aws eks describe-cluster --name elementor | jq -r '.cluster.resourcesVpcConfig.clusterSecurityGroupId'`
-          aws ec2 authorize-security-group-ingress \
-            --group-id ${AWS_SECURITY_GROUP_ID} \
-            --ip-permissions '[
-            {
-              "IpProtocol": "tcp",
-              "FromPort": 30081,
-              "ToPort": 30081,
-              "IpRanges": [{"CidrIp": "0.0.0.0/0"}]
-            },
-            {
-              "IpProtocol": "tcp",
-              "FromPort": 30082,
-              "ToPort": 30082,
-              "IpRanges": [{"CidrIp": "0.0.0.0/0"}]
-            },
-            {
-              "IpProtocol": "tcp",
-              "FromPort": 31644,
-              "ToPort": 31644,
-              "IpRanges": [{"CidrIp": "0.0.0.0/0"}]
-            },
-            {
-              "IpProtocol": "tcp",
-              "FromPort": 31092,
-              "ToPort": 31092,
-              "IpRanges": [{"CidrIp": "0.0.0.0/0"}]
-            }
-            ]'
+      - name: Get the ID of the security group that's associated with the nodes and add inbound firewall rules to the EC2
+        run: |
+          AWS_SECURITY_GROUP_ID=$(aws eks describe-cluster --name elementor | jq -r '.cluster.resourcesVpcConfig.clusterSecurityGroupId')
+
+          declare -a PORTS=(30081 30082 31644 31092)
+          for port in "${PORTS[@]}"; do
+            if ! aws ec2 describe-security-groups --group-ids "${AWS_SECURITY_GROUP_ID}" --query "SecurityGroups[0].IpPermissions[?FromPort==\`${port}\`]" | grep -q "FromPort\":${port}"; then
+              aws ec2 authorize-security-group-ingress \
+                --group-id "${AWS_SECURITY_GROUP_ID}" \
+                --ip-permissions '[
+                {
+                  "IpProtocol": "tcp",
+                  "FromPort": '"${port}"',
+                  "ToPort": '"${port}"',
+                  "IpRanges": [{"CidrIp": "0.0.0.0/0"}]
+                }
+                ]'
+            fi
+          done
 
       - name: Deploy Redpanda and Redpanda Console
         run: kubectl auth can-i create CustomResourceDefinition --all-namespaces
