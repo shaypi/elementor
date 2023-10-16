@@ -93,7 +93,7 @@ jobs:
         run: |
           terraform validate /
           terraform fmt /
-          terraform init -backend-config=ecr-backend.conf
+          terraform init -migrate-state -backend-config=ecr-backend.conf
           terraform plan -var-file="main.tfvars"
         id: plan
         
