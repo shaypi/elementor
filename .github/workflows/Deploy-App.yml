@@ -139,6 +139,9 @@ jobs:
           helm repo update
           helm upgrade -i aws-load-balancer-controller eks/aws-load-balancer-controller --namespace kube-system --set clusterName=elementor --set serviceAccount.create=false --set serviceAccount.name=cluster-autoscaler
       
+      - name: Create namespace
+        run : kubectl create ns cpu-monitor --dry-run=client -o yaml | kubectl apply -f -
+      
       - name: Install strimzi-kafka-operator
         run: |
           helm repo add strimzi https://strimzi.io/charts
@@ -149,7 +152,6 @@ jobs:
         working-directory: app
         run: |
           kubectl apply -f strimzi.yaml
-      
 
       - name: Create namespace
         run : kubectl create ns cpu-monitor --dry-run=client -o yaml | kubectl apply -f -
