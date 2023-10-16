@@ -93,7 +93,7 @@ jobs:
         run: |
           terraform validate /
           terraform fmt /
-          terraform init -migrate-state -backend-config=ecr-backend.conf
+          terraform init -reconfigure -backend-config=ecr-backend.conf
           terraform plan -var-file="main.tfvars"
         id: plan
         
@@ -106,7 +106,7 @@ jobs:
         run: |
           terraform validate /
           terraform fmt /
-          terraform init -migrate-state -backend-config=ecr-backend.conf
+          terraform init -reconfigure -backend-config=ecr-backend.conf
           terraform ${{ github.event.inputs.condition }} -var-file="main.tfvars" -auto-approve
           
       - name: Setup tmate session
