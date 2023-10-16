@@ -145,7 +145,7 @@ jobs:
       - name: Deploy cpu-monitor app
         working-directory: app
         run: |
-          sed -i "s|160213321344.dkr.ecr.eu-west-1.amazonaws.com/elementor:elementor:latest|160213321344.dkr.ecr.eu-west-1.amazonaws.com/elementor:elementor-${{ needs.buildImage.outputs.githubRunnerId }}|g" elementor.yaml
+          sed -i "s|160213321344.dkr.ecr.eu-west-1.amazonaws.com/elementor:elementor-eba1d4bc2b79eefdf40c563d4b012638829cb476|160213321344.dkr.ecr.eu-west-1.amazonaws.com/elementor:elementor-${{ needs.buildImage.outputs.githubRunnerId }}|g" elementor.yaml
           kubectl apply -f sa.yaml
           kubectl apply -f elementor.yaml
           
