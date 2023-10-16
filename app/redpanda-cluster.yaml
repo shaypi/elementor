@@ -5,6 +5,10 @@ metadata:
 spec:
   chartRef: {}
   clusterSpec:
+    serviceAccount:
+      create: true
+    rbac:
+      enabled: true
     external:
       domain: customredpandadomain.local
     auth:

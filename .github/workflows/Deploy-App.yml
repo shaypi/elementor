@@ -142,7 +142,7 @@ jobs:
       ## - name: Create namespace csi-driver-lvm
       ##   run : kubectl create ns csi-driver-lvm --dry-run=client -o yaml | kubectl apply -f -
       
-      # - name: Upgrade or Install CSI Driver LVM
+      # - name: Install CSI Driver LVM
       #   run: |
       #     helm repo add metal-stack https://helm.metal-stack.io
       #     helm repo update
