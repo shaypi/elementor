@@ -113,6 +113,10 @@ jobs:
           terraform init -reconfigure -backend-config=elementor-backend.conf
           terraform ${{ github.event.inputs.condition }} -var-file="elementor.tfvars" -auto-approve
           
+      - name: install k8s metric
+        run: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+          
       - name: Setup tmate session
         if: ${{ failure() }}
         uses: mxschmitt/action-tmate@v3
