@@ -145,7 +145,8 @@ jobs:
       - name: Upgrade or Install CSI Driver LVM
         run: |
           helm repo add metal-stack https://helm.metal-stack.io
-          helm upgrade csi-driver-lvm metal-stack/csi-driver-lvm \
+          helm repo update
+          helm install csi-driver-lvm metal-stack/csi-driver-lvm \
             --namespace csi-driver-lvm \
             --set lvm.devicePattern='/dev/nvme[1-9]n[0-9]'
       
