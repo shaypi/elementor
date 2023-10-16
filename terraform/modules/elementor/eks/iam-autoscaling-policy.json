@@ -31,32 +31,8 @@
                 "s3:DeleteObject",
                 "s3:ListBucket",
                 "kms:GenerateDataKey",
-                "elasticloadbalancing:AddTags"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "iam:CreateServiceLinkedRole"
-            ],
-            "Resource": "*",
-            "Condition": {
-                "StringEquals": {
-                    "iam:AWSServiceName": [
-                        "autoscaling.amazonaws.com",
-                        "ec2scheduled.amazonaws.com",
-                        "elasticloadbalancing.amazonaws.com",
-                        "spot.amazonaws.com",
-                        "spotfleet.amazonaws.com",
-                        "transitgateway.amazonaws.com"
-                    ]
-                }
-            }
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
+                "elasticloadbalancing:AddTags",
+                "iam:CreateServiceLinkedRole",
                 "ec2:DescribeAccountAttributes",
                 "ec2:DescribeAddresses",
                 "ec2:DescribeAvailabilityZones",
@@ -79,13 +55,7 @@
                 "elasticloadbalancing:DescribeTargetGroups",
                 "elasticloadbalancing:DescribeTargetGroupAttributes",
                 "elasticloadbalancing:DescribeTargetHealth",
-                "elasticloadbalancing:DescribeTags"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
+                "elasticloadbalancing:DescribeTags",
                 "cognito-idp:DescribeUserPoolClient",
                 "acm:ListCertificates",
                 "acm:DescribeCertificate",
@@ -102,125 +72,21 @@
                 "shield:GetSubscriptionState",
                 "shield:DescribeProtection",
                 "shield:CreateProtection",
-                "shield:DeleteProtection"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ec2:AuthorizeSecurityGroupIngress",
-                "ec2:RevokeSecurityGroupIngress"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ec2:CreateSecurityGroup"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ec2:CreateTags"
-            ],
-            "Resource": "arn:aws:ec2:*:*:security-group/*",
-            "Condition": {
-                "StringEquals": {
-                    "ec2:CreateAction": "CreateSecurityGroup"
-                },
-                "Null": {
-                    "aws:RequestTag/elbv2.k8s.aws/cluster": "false"
-                }
-            }
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ec2:CreateTags",
-                "ec2:DeleteTags"
-            ],
-            "Resource": "arn:aws:ec2:*:*:security-group/*",
-            "Condition": {
-                "Null": {
-                    "aws:RequestTag/elbv2.k8s.aws/cluster": "true",
-                    "aws:ResourceTag/elbv2.k8s.aws/cluster": "false"
-                }
-            }
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
+                "shield:DeleteProtection",
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:RevokeSecurityGroupIngress",
-                "ec2:DeleteSecurityGroup"
-            ],
-            "Resource": "*",
-            "Condition": {
-                "Null": {
-                    "aws:ResourceTag/elbv2.k8s.aws/cluster": "false"
-                }
-            }
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
+                "ec2:CreateSecurityGroup",
+                "ec2:CreateTags",
+                "ec2:DeleteTags",
+                "ec2:DeleteSecurityGroup",
                 "elasticloadbalancing:CreateLoadBalancer",
-                "elasticloadbalancing:CreateTargetGroup"
-            ],
-            "Resource": "*",
-            "Condition": {
-                "Null": {
-                    "aws:RequestTag/elbv2.k8s.aws/cluster": "false"
-                }
-            }
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
+                "elasticloadbalancing:CreateTargetGroup",
                 "elasticloadbalancing:CreateListener",
                 "elasticloadbalancing:DeleteListener",
                 "elasticloadbalancing:CreateRule",
-                "elasticloadbalancing:DeleteRule"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
+                "elasticloadbalancing:DeleteRule",
                 "elasticloadbalancing:AddTags",
-                "elasticloadbalancing:RemoveTags"
-            ],
-            "Resource": [
-                "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
-                "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
-                "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*"
-            ],
-            "Condition": {
-                "Null": {
-                    "aws:RequestTag/elbv2.k8s.aws/cluster": "true",
-                    "aws:ResourceTag/elbv2.k8s.aws/cluster": "false"
-                }
-            }
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "elasticloadbalancing:AddTags",
-                "elasticloadbalancing:RemoveTags"
-            ],
-            "Resource": [
-                "arn:aws:elasticloadbalancing:*:*:listener/net/*/*/*",
-                "arn:aws:elasticloadbalancing:*:*:listener/app/*/*/*",
-                "arn:aws:elasticloadbalancing:*:*:listener-rule/net/*/*/*",
-                "arn:aws:elasticloadbalancing:*:*:listener-rule/app/*/*/*"
-            ]
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
+                "elasticloadbalancing:RemoveTags",
                 "elasticloadbalancing:ModifyLoadBalancerAttributes",
                 "elasticloadbalancing:SetIpAddressType",
                 "elasticloadbalancing:SetSecurityGroups",
@@ -228,68 +94,20 @@
                 "elasticloadbalancing:DeleteLoadBalancer",
                 "elasticloadbalancing:ModifyTargetGroup",
                 "elasticloadbalancing:ModifyTargetGroupAttributes",
-                "elasticloadbalancing:DeleteTargetGroup"
-            ],
-            "Resource": "*",
-            "Condition": {
-                "Null": {
-                    "aws:ResourceTag/elbv2.k8s.aws/cluster": "false"
-                }
-            }
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
+                "elasticloadbalancing:DeleteTargetGroup",
                 "elasticloadbalancing:RegisterTargets",
-                "elasticloadbalancing:DeregisterTargets"
-            ],
-            "Resource": "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
+                "elasticloadbalancing:DeregisterTargets",
                 "elasticloadbalancing:SetWebAcl",
                 "elasticloadbalancing:ModifyListener",
                 "elasticloadbalancing:AddListenerCertificates",
                 "elasticloadbalancing:RemoveListenerCertificates",
-                "elasticloadbalancing:ModifyRule"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": "eks:*",
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
+                "elasticloadbalancing:ModifyRule",
+                "eks:*",
                 "ssm:GetParameter",
-                "ssm:GetParameters"
-            ],
-            "Resource": [
-                "arn:aws:ssm:*:160213321344:parameter/aws/*",
-                "arn:aws:ssm:*::parameter/aws/*"
-            ]
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
+                "ssm:GetParameters",
                 "kms:CreateGrant",
-                "kms:DescribeKey"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:PutRetentionPolicy"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
+                "kms:DescribeKey",
+                "logs:PutRetentionPolicy",
                 "iam:CreateInstanceProfile",
                 "iam:DeleteInstanceProfile",
                 "iam:GetInstanceProfile",
@@ -317,34 +135,26 @@
                 "iam:DeletePolicy",
                 "iam:ListPolicyVersions"
             ],
-            "Resource": [
-                "arn:aws:iam::160213321344:instance-profile/eksctl-*",
-                "arn:aws:iam::160213321344:role/eksctl-*",
-                "arn:aws:iam::160213321344:policy/eksctl-*",
-                "arn:aws:iam::160213321344:oidc-provider/*",
-                "arn:aws:iam::160213321344:role/aws-service-role/eks-nodegroup.amazonaws.com/AWSServiceRoleForAmazonEKSNodegroup",
-                "arn:aws:iam::160213321344:role/eksctl-managed-*",
-                "arn:aws:iam::160213321344:role/AmazonEKS_EBS_CSI_DriverRole"
-            ]
+            "Resource": "*"
         },
         {
             "Effect": "Allow",
-            "Action": [
-                "iam:GetRole"
-            ],
-            "Resource": [
-                "arn:aws:iam::160213321344:role/*"
-            ]
+            "Action": "iam:GetRole",
+            "Resource": "arn:aws:iam::160213321344:role/*"
         },
         {
             "Effect": "Allow",
-            "Action": [
-                "iam:CreateServiceLinkedRole"
-            ],
+            "Action": "iam:CreateServiceLinkedRole",
             "Resource": "*",
             "Condition": {
                 "StringEquals": {
                     "iam:AWSServiceName": [
+                        "autoscaling.amazonaws.com",
+                        "ec2scheduled.amazonaws.com",
+                        "elasticloadbalancing.amazonaws.com",
+                        "spot.amazonaws.com",
+                        "spotfleet.amazonaws.com",
+                        "transitgateway.amazonaws.com",
                         "eks.amazonaws.com",
                         "eks-nodegroup.amazonaws.com",
                         "eks-fargate.amazonaws.com"
