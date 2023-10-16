@@ -96,7 +96,7 @@ jobs:
       - name: Install third-party dependencies
         run: |
           apt-get update
-          apt-get install -y zip curl jq
+          apt-get install -y zip curl jq git
       
       - name: Install AWS CLI
         run: |
@@ -187,7 +187,6 @@ jobs:
       #       }
       #       ]'
             
-
       - name: Deploy Redpanda and Redpanda Console
         run: kubectl auth can-i create CustomResourceDefinition --all-namespaces
       
@@ -201,11 +200,10 @@ jobs:
             --create-namespace
       
       - name: Create redpanda namespace  
-        run : kubectl kustomize https://github.com/redpanda-data/redpanda//src/go/k8s/config/crd | kubectl apply -f -
+        run : kubectl create ns redpanda --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Install the Redpanda Operator custom resource definitions (CRDs)
-        run: |
-          kubectl kustomize https://github.com/redpanda-data/redpanda//src/go/k8s/config/crd | kubectl apply -f -
+        run: kubectl kustomize https://github.com/redpanda-data/redpanda/src/go/k8s/config/crd | kubectl apply -f -
 
       - name: Deploy the Redpanda Operator
         run: |
