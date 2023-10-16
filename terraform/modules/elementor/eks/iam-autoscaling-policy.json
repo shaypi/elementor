@@ -161,6 +161,20 @@
                     ]
                 }
             }
-        }
-    ]
-}
+        },
+        {
+            "Effect": "Allow",
+            "Action": "eks:*",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:GetParameter",
+                "ssm:GetParameters"
+            ],
+            "Resource": [
+                "arn:aws:ssm:*:<account-id>:parameter/aws/*",
+                "arn:aws:ssm:*::parameter/aws/*"
+            ]
+        },
