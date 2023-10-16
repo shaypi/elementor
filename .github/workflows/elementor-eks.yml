@@ -98,7 +98,7 @@ jobs:
         run: |
           terraform validate /
           terraform fmt /
-          terraform init -backend-config=elementor-backend.conf
+          terraform init -reconfigure -backend-config=elementor-backend.conf
           terraform plan -var-file="elementor.tfvars"
         id: plan
         
@@ -110,8 +110,7 @@ jobs:
         working-directory: terraform/environments/test/elementor
         run: |
           terraform validate /
-          terraform fmt /
-          terraform init -backend-config=elementor-backend.conf
+          terraform init -reconfigure -backend-config=elementor-backend.conf
           terraform ${{ github.event.inputs.condition }} -var-file="elementor.tfvars" -auto-approve
           
       - name: Setup tmate session
