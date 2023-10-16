@@ -1,0 +1,154 @@
+name: CI CD
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/environments/test/ecr/**'
+      - 'terraform/modules/elementor/ecr/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'terraform/environments/test/ecr/**'
+      - 'terraform/modules/elementor/ecr/**'
+  workflow_dispatch:
+
+env:
+  AWS_REGION: eu-west-1
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  buildImage:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:20.04
+    outputs:
+      githubRunnerId: ${{ steps.id.outputs.github_runner_id }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: define Runner ID
+        run: |
+          echo "runner id: $GITHUB_RUN_ID"
+          echo "::set-output name=github_runner_id::$GITHUB_RUN_ID"
+        id: id
+
+      - name: Install Docker
+        run: |
+          apt-get update
+          apt-get install -y docker.io
+
+      - name: Install third-party dependencies
+        run: |
+          apt-get install -y zip curl
+
+      - name: Install AWS CLI
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          ./aws/install
+          apt-get update
+          apt-get dist-upgrade -y
+          apt-get install -y less
+
+      - name: Configure AWS credentials
+        run: |
+          mkdir ~/.aws
+          echo "[default]" > ~/.aws/credentials
+          echo "aws_access_key_id=${AWS_ACCESS_KEY_ID}" >> ~/.aws/credentials
+          echo "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" >> ~/.aws/credentials
+          echo "[default]" > ~/.aws/config
+          echo "region=${AWS_REGION}" >> ~/.aws/config
+
+      - name: Login to AWS
+        run: aws ecr get-login-password | docker login --username AWS --password-stdin 160213321344.dkr.ecr.eu-west-1.amazonaws.com
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          App: elementor
+          ECR_REGISTRY: 160213321344.dkr.ecr.eu-west-1.amazonaws.com
+          ECR_REPOSITORY: elementor
+          SHA:  ${{ github.sha }}
+        run: |
+          docker build -t $App app/ 
+          docker tag $App $ECR_REGISTRY/$ECR_REPOSITORY:$SHA
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$SHA
+          docker tag $App $ECR_REGISTRY/$ECR_REPOSITORY:$App-${{ github.run_id }}
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$App-${{ github.run_id }}
+
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+
+  CD:
+    runs-on: ubuntu-latest
+    needs: buildImage
+    container:
+      image: ubuntu:20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - run: echo ${{ needs.buildImage.outputs.githubRunnerId }}
+      - name: Install third-party dependencies
+        run: |
+          apt-get update
+          apt-get install -y zip curl
+      
+      - name: Install AWS CLI
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          ./aws/install
+          apt-get update
+          apt-get dist-upgrade -y
+          apt-get install -y less
+          
+      - name: Configure AWS credentials
+        run: |
+          mkdir ~/.aws
+          echo "[default]" > ~/.aws/credentials
+          echo "aws_access_key_id=${AWS_ACCESS_KEY_ID}" >> ~/.aws/credentials
+          echo "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" >> ~/.aws/credentials
+          echo "[default]" > ~/.aws/config
+          echo "region=${AWS_REGION}" >> ~/.aws/config
+      
+      - name: Install kubectl 
+        run: |
+          curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x ./kubectl
+          mv ./kubectl /usr/local/bin/kubectl
+          kubectl version --client --output=yaml
+      
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+          chmod 700 get_helm.sh
+          ./get_helm.sh
+          helm version
+          
+      - name: Connect to the cluster
+        run: aws eks --region eu-west-1 update-kubeconfig --name elementor
+
+      - name: Add the EKS repository to Helm and install AWS LB Controller
+        run: |
+          helm repo add eks https://aws.github.io/eks-charts
+          helm repo update
+          helm upgrade -i aws-load-balancer-controller eks/aws-load-balancer-controller --namespace kube-system --set clusterName=elementor --set serviceAccount.create=false --set serviceAccount.name=cluster-autoscaler
+
+      - name: Create namespace
+        run : kubectl create ns cpu-monitor --dry-run=client -o yaml | kubectl apply -f -
+      
+      - name: Deploy cpu-monitor app
+        working-directory: app
+        run: |
+          sed -i "s|160213321344.dkr.ecr.eu-west-1.amazonaws.com/cpu-monitor:cpu-monitor-5364552348|160213321344.dkr.ecr.eu-west-1.amazonaws.com/cpu-monitor:cpu-monitor-${{ needs.buildImage.outputs.githubRunnerId }}|g" elementor.yaml
+          kubectl apply -f sa.yaml
+          kubectl apply -f elementor.yaml
+          
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
