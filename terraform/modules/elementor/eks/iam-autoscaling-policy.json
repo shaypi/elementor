@@ -174,7 +174,7 @@
                 "ssm:GetParameters"
             ],
             "Resource": [
-                "arn:aws:ssm:*:<account-id>:parameter/aws/*",
+                "arn:aws:ssm:*:160213321344:parameter/aws/*",
                 "arn:aws:ssm:*::parameter/aws/*"
             ]
         },
