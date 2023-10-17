@@ -1,6 +1,6 @@
 FROM python:3.8-slim
 
-ENV KAFKA_BROKER=localhost:9092
+ENV KAFKA_BROKER=my-kafka-cluster-kafka-brokers
 ENV KAFKA_TOPIC=cpu-levels
 
 WORKDIR /app
