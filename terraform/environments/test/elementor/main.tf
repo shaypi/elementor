@@ -3,7 +3,9 @@ provider "aws" {
 }
 
 data "aws_region" "current" {}
-
+provider "eks" {
+  region = var.region
+}
 
 module "vpc" {
   create_vpc          = true
