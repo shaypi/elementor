@@ -151,19 +151,12 @@ jobs:
           sleep 30
           kubectl apply -f kafka-cluster.yaml
       
-      # - name: install k8s metric
-      #   run: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
-      
-      - name: Create namespace cpu-monitor
-        run : kubectl create ns cpu-monitor --dry-run=client -o yaml | kubectl apply -f -
-      
       - name: Deploy cpu-monitor app
         working-directory: app
         run: |
           sed -i "s|160213321344.dkr.ecr.eu-west-1.amazonaws.com/elementor:elementor-eca8d88909e0d033e6b77fab7e089c9a88f3602e|160213321344.dkr.ecr.eu-west-1.amazonaws.com/elementor:elementor-${{ needs.buildImage.outputs.githubRunnerId }}|g" elementor.yaml
           kubectl apply -f elementor.yaml
 
-      # Need to edit Grafana service (monitoring-grafana) to use NodePort instaed of ClusterIP
       - name: Install Monitoring (prometheus stack)
         working-directory: monitor
         run: |
