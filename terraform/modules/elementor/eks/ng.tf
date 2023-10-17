@@ -10,10 +10,16 @@ data "aws_eks_addon_version" "latest_coredns" {
   most_recent = true
 }
 
-resource "aws_eks_addon" "ebs_csi_driver" {
+resource "aws_eks_addon" "vpc-cni" {
+  #  depends_on   = [aws_eks_node_group.eks-node-group]
   cluster_name = aws_eks_cluster.main.name
-  addon_name = "aws-ebs-csi-driver"
-  addon_version = data.aws_eks_addon_version.latest_ebs_csi_driver.version
+  addon_name   = "vpc-cni"
+}
+
+resource "aws_eks_addon" "kube-proxy" {
+  #  depends_on   = [aws_eks_node_group.eks-node-group]
+  cluster_name = aws_eks_cluster.main.name
+  addon_name   = "kube-proxy"
 }
 
 resource "aws_eks_addon" "coredns" {
@@ -22,17 +28,10 @@ resource "aws_eks_addon" "coredns" {
   addon_version = data.aws_eks_addon_version.latest_coredns.version
 }
 
-resource "aws_eks_addon" "coredns" {
-  #  depends_on   = [aws_eks_node_group.eks-node-group]
-  cluster_name = aws_eks_cluster.main.name
-  addon_name   = "coredns"
-}
-
 resource "aws_eks_addon" "ebs_csi_driver" {
-  #  depends_on = [aws_eks_node_group.eks-node-group]
-  cluster_name  = aws_eks_cluster.main.name
-  addon_version            = data.aws_eks_addon_version.latest_ebs_csi_driver.version
-  addon_name    = "aws-ebs-csi-driver"
+  cluster_name = aws_eks_cluster.main.name
+  addon_name = "aws-ebs-csi-driver"
+  addon_version = data.aws_eks_addon_version.latest_ebs_csi_driver.version
 }
 
 ############### NODE GROUP CONFIGS ####################
