@@ -17,7 +17,7 @@ eks_cluster_name    = "elementor"
 
 #EKS
 cluster_name            = "elementor"
-k8s_version             = "1.28"
+k8s_version             = "1.23"
 node_instance_type      = "t3.large"
 aws_iam                 = "eks-cluster-autoscaler"
 desired_capacity        = 3

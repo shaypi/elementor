@@ -74,7 +74,12 @@ resource "aws_iam_role_policy_attachment" "node-AmazonEC2ContainerRegistryReadOn
   role       = aws_iam_role.node.name
 }
 
+resource "aws_iam_role_policy_attachment" "node-AmazonEC2FullAccess" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+  role       = aws_iam_role.node.name
+}
 resource "aws_iam_instance_profile" "node" {
   name = "${var.prefix}-eks-node-instance-profile"
   role = aws_iam_role.node.name
 }
+
