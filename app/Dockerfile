@@ -1,7 +1,7 @@
 FROM python:3.8-slim
 
 ENV KAFKA_BROKER=localhost:9092
-ENV KAFKA_TOPIC=cpu_levels
+ENV KAFKA_TOPIC=cpu-levels
 
 WORKDIR /app
 

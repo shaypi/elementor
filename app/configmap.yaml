@@ -4,4 +4,4 @@ metadata:
   name: cpu-monitor-config
 data:
   KAFKA_BROKER: kafka-broker:9092
-  KAFKA_TOPIC: cpu_levels
+  KAFKA_TOPIC: cpu-levels

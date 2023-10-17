@@ -2,10 +2,10 @@ import time
 import psutil
 from confluent_kafka import Producer
 
-kafka_broker = 'localhost:9092'
-kafka_topic = 'cpu_levels'
+kafka_broker = 'my-kafka-cluster-kafka-brokers:9092'
+kafka_topic = 'cpu-levels'
 
-producer = Producer({'bootstrap.servers': kafka_broker})
+producer = Producer({'bootstrap.servers': kafka_broker, 'acks': 'all'})
 
 def get_cpu_usage():
     return psutil.cpu_percent(interval=1)

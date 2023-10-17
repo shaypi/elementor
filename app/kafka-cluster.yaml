@@ -5,7 +5,7 @@ metadata:
   namespace: strimzi
 spec:
   kafka:
-    version: 3.8.0
+    version: 3.4.0
     replicas: 3
     listeners:
       - name: plain
@@ -41,3 +41,14 @@ spec:
   entityOperator:
     topicOperator: {}
     userOperator: {}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: cpu-levels
+  namespace: strimzi
+  labels:
+    strimzi.io/cluster: my-kafka-cluster
+spec:
+  partitions: 3
+  replicas: 1
