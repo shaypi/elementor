@@ -1,0 +1,14 @@
+{
+  "name": "backup",
+  "config": {
+    "connector.class": "com.spredfast.kafka.connect.s3.sink.S3SinkConnector",
+    "format.include.keys": "true",
+    "topics": "Animals",
+    "tasks.max": "1",
+    "format": "binary",
+ "s3.bucket": "elementor-data-candidates-bucket1",
+    "value.converter": "com.spredfast.kafka.connect.s3.AlreadyBytesConverter",
+    "key.converter": "com.spredfast.kafka.connect.s3.AlreadyBytesConverter",
+    "local.buffer.dir": "/tmp"
+  }
+}
