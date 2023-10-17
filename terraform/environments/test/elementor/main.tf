@@ -1,12 +1,7 @@
 provider "aws" {
   region = var.region
 }
-provider "hashicorp/eks" {
-  region = var.region
-}
-
 data "aws_region" "current" {}
-
 module "vpc" {
   create_vpc          = true
   source              = "../../../modules/elementor/aws-vpc"
