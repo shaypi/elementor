@@ -8,8 +8,8 @@ application = "elementor"
 create_vpc          = true
 cidr_block          = "10.0.16.0/23"
 azs                 = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
-public_subnet_cidr  = ["10.0.16.0/27", "10.0.16.32/27", "10.0.16.64/27"]
-private_subnet_cidr = ["10.0.17.0/27", "10.0.17.32/27", "10.0.17.64/27"]
+public_subnet_cidr = ["10.0.16.0/26", "10.0.16.64/26", "10.0.16.128/26"]
+private_subnet_cidr = ["10.0.17.0/26", "10.0.17.64/26", "10.0.17.128/26"]
 enable_nat_gateway  = true
 public_eks_tag      = { "kubernetes.io/role/elb" = 1 }
 private_eks_tag     = { "kubernetes.io/role/internal-elb" = 1 }

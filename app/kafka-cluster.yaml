@@ -12,10 +12,14 @@ spec:
         port: 9092
         type: internal
         tls: false
-      - name: tls
+      - name: internal
         port: 9093
         type: internal
-        tls: true
+        tls: false
+      - name: external
+        port: 9094
+        type: loadbalancer
+        tls: false
     storage:
       type: jbod
       volumes:

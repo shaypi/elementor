@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: cpu-monitor
-          image: 160213321344.dkr.ecr.eu-west-1.amazonaws.com/elementor:eca8d88909e0d033e6b77fab7e089c9a88f3602e
+          image: 160213321344.dkr.ecr.eu-west-1.amazonaws.com/elementor:350aa41ab7c1e26644511a830727cf27348abb44
           env:
             - name: KAFKA_BROKER
               value: "my-kafka-cluster-kafka-brokers:9092"
