@@ -1,13 +1,13 @@
 provider "aws" {
   region = var.region
 }
-
-data "aws_region" "current" {}
-provider "eks" {
+provider "hashicorp/eks" {
   region = var.region
 }
 
-module "vpc" {
+data "aws_region" "current" {}
+
+module "vpc" 
   create_vpc          = true
   source              = "../../../modules/elementor/aws-vpc"
   cidr_block          = var.cidr_block
