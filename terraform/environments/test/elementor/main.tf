@@ -7,7 +7,7 @@ provider "hashicorp/eks" {
 
 data "aws_region" "current" {}
 
-module "vpc" 
+module "vpc" {
   create_vpc          = true
   source              = "../../../modules/elementor/aws-vpc"
   cidr_block          = var.cidr_block
