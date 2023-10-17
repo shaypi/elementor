@@ -147,7 +147,8 @@ jobs:
           kubectl create ns strimzi --dry-run=client -o yaml | kubectl apply -f -
           helm repo add strimzi https://strimzi.io/charts
           helm repo update
-          helm upgrade my-strimzi-kafka-operator strimzi/strimzi-kafka-operator --namespace strimzi --version 0.35.0
+          helm upgrade -i my-strimzi-kafka-operator strimzi/strimzi-kafka-operator --namespace strimzi --version 0.35.0
+          sleep 30
           kubectl apply -f kafka-cluster.yaml
       
       # - name: install k8s metric
